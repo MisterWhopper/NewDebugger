@@ -3,14 +3,12 @@
 namespace lws {
 namespace dbg {
 
-Debugger::Debugger(const std::string& _originCls, const DebugFlag* _default=nullptr, std::ostream& _output, std::ostream& _erroutput=std::cerr) {
+Debugger::Debugger(const std::string& _originCls, const std::initializer_list<DebugFlag> _default, std::ostream& _output, std::ostream& _erroutput=std::cerr) {
     originCls = _originCls;
-    if(_default) {
-        // if this segfaults, blame: https://www.tutorialspoint.com/how-do-i-find-the-length-of-an-array-in-c-cplusplus
-        size_t arrSize = (size_t)(*(&_default + 1) - _default);
-        for(size_t i = 0; i < arrSize; ++i) {
+    if(_default.size() > 0) {
+        for(auto flag : _default) {
             try {
-                setFlag(_default[i]);
+                setFlag(flag);
             } catch (err::CannotSetFlag err) {
                 continue; // we just don't want to set this flag.
             }

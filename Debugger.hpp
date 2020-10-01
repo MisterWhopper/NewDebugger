@@ -16,10 +16,11 @@ class Debugger {
 			USING_FILES		= 8,	// Are we using file streams for output? Internal-only.
 			COLOR_SUPPORT	= 16	// Does this stream support coloring using terminal characters? Cannot be set with USING_FILES flag.
 		};
-		Debugger(const std::string& _originCls, 		// name of the originating class
-				const DebugFlag* _default=nullptr, 		// array of flags to set at initialization
-				std::ostream& _stdoutput=std::cout,		// The output stream for standard logging 
-				std::ostream& _erroutput=std::cerr);	// The output stream for error messages 
+		Debugger(const std::string& _originCls, 			// name of the originating class
+				const std::initializer_list<DebugFlag> 
+				_default={DebugFlag::VERBOSE_MEDIUM}, 		// array of flags to set at initialization
+				std::ostream& _stdoutput=std::cout,			// The output stream for standard logging 
+				std::ostream& _erroutput=std::cerr);		// The output stream for error messages 
 		std::ostream& operator<<(const std::string& msg);
 		std::ostream& operator<<(const char* msg);
 		std::ostream& operator<<(const int& msg);
