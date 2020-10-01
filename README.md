@@ -5,6 +5,8 @@ This `Debugger` object will allow for more verbose logging inside objects. Can w
 
 This `Debugger` class is meant to be similar to the `dbg()` in the fantastic project [SerenityOS](https://github.com/SerenityOS/serenity/). 
 
+**WARNING:** This code is still actively under development by someone who is still pretty new at C++. Use this code at your peril.
+
 ## Usage
 
 ```c++
