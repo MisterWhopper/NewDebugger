@@ -6,5 +6,5 @@ using namespace lws;
 
 int main() {
     // Create a debugger instance
-    dbg::Debugger dbg("main",{dbg::Debugger::DebugFlag::VERBOSE_HIGH});
+    dbg::Debugger dbg("main");
 }
