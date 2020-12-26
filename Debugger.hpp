@@ -40,7 +40,7 @@ class Debugger {
 			if(_default.size() > 0) {
 				for(auto flag : _default) {
 					try {
-						setFlag(flag);
+						flipFlag(flag);
 					} catch (err::CannotSetFlag err) {
 						continue; // we just don't want to set this flag.
 					}
@@ -58,13 +58,13 @@ class Debugger {
 			if(_default.size() > 0) {
 				for(auto flag : _default) {
 					try {
-						setFlag(flag);
+						flipFlag(flag);
 					} catch (err::CannotSetFlag err) {
 						continue; // we just don't want to set this flag.
 					}
 				}
 			}  // if the user has no flags set, there will be no output, which is on them.
-			setFlag(USING_FILES); // we are using files, so when we use the << operator we know to use these and not the ostreams
+			flipFlag(USING_FILES); // we are using files, so when we use the << operator we know to use these and not the ostreams
 			m_outputStream = nullptr; // make sure we really can't use these
 			m_errStream = nullptr;
 			m_fileStd.open(_stdfile);
@@ -97,10 +97,26 @@ class Debugger {
 		std::ostream& operator<<(const double& msg);
 		std::ostream& operator<<(const float& msg);
 		std::ostream& operator<<(std::ostream& os);
-		void setFlag(const DebugFlag& nflag);
+
+		// Are these functions below strictly necessary? Maybe not, but doing it was a nice bitwise exercise
+
+		// set/unset a flag 
+		void flipFlag(const DebugFlag& nflag) {
+			m_flags ^= nflag;
+		};
+
+		// set a flag
+		void setFlag(const DebugFlag& nflag) {
+			m_flags |= nflag;
+		}
+
+		// unset a flag
+		void unsetFlag(const DebugFlag& nflag) {
+			m_flags &= ~nflag;
+		}
 	protected: 									// use protected instead of private; if the user wants to inherit from this and change our state, fine by me.
-		int m_flags;
-		std::string m_originCls;
+		int m_flags;							// flags to change the behavior of the logging system
+		std::string m_originCls;				// specifies the class that this message originiated from
 		static std::ostream* m_outputStream; 	// we want this staic, so everything gets written to a specific place.
 		static std::ostream* m_errStream;		// we have to use pointers as the copy-constructor is protected
 		static std::ifstream m_fileStd;			// if the user is using files, then we want to manage these ourselves.
