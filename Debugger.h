@@ -7,7 +7,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <queue>
 #include <string>
 namespace lws { // part of the ongoing lwslib project
 namespace dbg {
@@ -19,6 +18,33 @@ class Debugger {
 			VERBOSE_HIGH	= 4,	// Print all messages
 			USING_FILES		= 8,	// Are we using file streams for output? Internal-only.
 			COLOR_SUPPORT	= 16	// Does this stream support coloring using terminal characters? Cannot be set with USING_FILES flag.
+		};
+
+		enum MessagePriority { // Set the priority of an individual message
+			LOW 	= 0,
+			MED 	= 1,
+			HIGH 	= 2
+		};
+
+		struct DebugMessage { // construct for a message written to the debugger
+			public:
+				DebugMessage(const std::string& originator, const std::string& msg, const MessagePriority& priority=LOW) {
+					m_originator = originator;
+					m_msg = msg;
+					m_priority = priority;
+				};
+				DebugMessage(const std::string& msg, const MessagePriority& priority=LOW, const std::string& originator=NULL) {
+					m_originator = originator;
+					m_msg = msg;
+					m_priority = priority;
+				};
+				std::string origin() { return m_originator; };
+				std::string msg() { return m_msg; }
+				MessagePriority priority() { return m_priority; }
+			private:
+				std::string m_originator = NULL;
+				MessagePriority m_priority = LOW;
+				std::string m_msg = NULL;
 		};
 
 		// Annotated constructors, purely for documentation's sake.
@@ -118,16 +144,19 @@ class Debugger {
 		void unsetFlag(const DebugFlag& nflag) {
 			m_flags &= ~nflag;
 		}
-	protected: 									// use protected instead of private; if the user wants to inherit from this and change our state, fine by me.
-		int m_flags;							// flags to change the behavior of the logging system
-		std::string m_originCls;				// specifies the class that this message originiated from
-		static std::ostream* m_outputStream; 	// we want this staic, so everything gets written to a specific place.
-		static std::ostream* m_errStream;		// we have to use pointers as the copy-constructor is protected
-		static std::ifstream m_fileStd;			// if the user is using files, then we want to manage these ourselves.
-		static std::ifstream m_fileErr;			// if the user is using files, then we want to manage these ourselves.
-		static std::string m_fileStdName;		// std::fstream objects do not store the file name; we may want to
+
+		bool checkFlag(const DebugFlag& nflag) {
+			return (m_flags & nflag) != 0;
+		}
+	protected: 										// use protected instead of private; if the user wants to inherit from this and change our state, fine by me.
+		int m_flags;								// flags to change the behavior of the logging system
+		std::string m_originCls;					// specifies the class that this message originiated from
+		static std::ostream* m_outputStream; 		// we want this staic, so everything gets written to a specific place.
+		static std::ostream* m_errStream;			// we have to use pointers as the copy-constructor is protected
+		static std::ifstream m_fileStd;				// if the user is using files, then we want to manage these ourselves.
+		static std::ifstream m_fileErr;				// if the user is using files, then we want to manage these ourselves.
+		static std::string m_fileStdName;			// std::fstream objects do not store the file name; we may want to
 		static std::string m_fileErrName;
-		static std::queue<std::string> m_messages;
 };
 }
 }
