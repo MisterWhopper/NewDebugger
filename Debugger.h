@@ -2,8 +2,12 @@
 #pragma once
 #ifndef _LWS_DEBUGGER_
 #define _LWS_DEBUGGER_
-#include <iostream>
+
+#include "DebuggerErrors.h"
+
 #include <fstream>
+#include <iostream>
+#include <queue>
 #include <string>
 namespace lws { // part of the ongoing lwslib project
 namespace dbg {
@@ -123,19 +127,7 @@ class Debugger {
 		static std::ifstream m_fileErr;			// if the user is using files, then we want to manage these ourselves.
 		static std::string m_fileStdName;		// std::fstream objects do not store the file name; we may want to
 		static std::string m_fileErrName;
-};
-}
-namespace err { // custom errors
-struct BadStream : public std::exception {
-	const char* what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_NOTHROW override {
-		return "Could not open output stream!"; // FIXME: Not verbose enough (ironic)
-	}
-};
-struct CannotSetFlag : public std::exception {
-	const char* what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_NOTHROW override;
-};
-struct FileError : public std::exception {
-	const char* what() const _GLIBCXX_TXN_SAFE_DYN _GLIBCXX_NOTHROW override;
+		static std::queue<std::string> m_messages;
 };
 }
 }

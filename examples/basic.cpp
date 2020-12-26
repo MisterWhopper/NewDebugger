@@ -1,6 +1,6 @@
 // This file is just for demonstrating methods of the Debugger object as it develops
 
-#include "../Debugger.hpp"
+#include "../Debugger.h"
 
 using namespace lws;
 
